@@ -6,18 +6,29 @@ metadata:
 spec:
   project: platform
 
-  sources:
-    - repoURL: https://charts.bitnami.com/bitnami
-      chart: minio
-      targetRevision: 17.0.21
-      helm:
-        releaseName: minio-tfstate
-        valueFiles:
-          - $values/argocd/helm-values/minio/tfstate-values.yaml
+  source:
+    repoURL: oci://registry-1.docker.io/bitnamicharts
+    chart: minio
+    targetRevision: 17.0.21
+    helm:
+      releaseName: minio-tfstate
+      # IMPORTANT for OCI charts:
+      # (ArgoCD supports this on modern versions)
+      # If your ArgoCD version uses a different field name,
+      # we’ll adjust after the next error message.
+      enableOCI: true
 
-    - repoURL: https://github.com/mimyrtek/platform-gitops.git
-      targetRevision: main
-      ref: values
+      parameters:
+        - name: auth.rootUser
+          value: minioadmin
+        - name: auth.rootPassword
+          value: minioadmin
+        - name: defaultBuckets
+          value: tfstate
+        - name: persistence.enabled
+          value: "true"
+        - name: persistence.size
+          value: 20Gi
 
   destination:
     server: https://kubernetes.default.svc
