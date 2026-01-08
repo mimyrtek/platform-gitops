@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio-tfstate
+  namespace: argocd
+spec:
+  project: platform
+
+  sources:
+    - repoURL: https://charts.bitnami.com/bitnami
+      chart: minio
+      targetRevision: 14.7.8
+      helm:
+        releaseName: minio-tfstate
+        valueFiles:
+          - $values/argocd/helm-values/minio/tfstate-values.yaml
+
+    - repoURL: <YOUR_GIT_REPO_URL>
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tf-state
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

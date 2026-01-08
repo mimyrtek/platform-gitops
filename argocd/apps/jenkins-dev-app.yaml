@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jenkins-dev
+  namespace: argocd
+spec:
+  project: platform
+
+  sources:
+    - repoURL: https://charts.jenkins.io
+      chart: jenkins
+      targetRevision: 5.8.6
+      helm:
+        releaseName: jenkins-dev
+        valueFiles:
+          - $values/argocd/helm-values/jenkins/dev-values.yaml
+
+    - repoURL: <YOUR_GIT_REPO_URL>
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: jenkins-dev
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

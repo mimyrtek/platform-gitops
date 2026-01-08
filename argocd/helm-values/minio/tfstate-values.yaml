@@ -1,0 +1,12 @@
+auth:
+  rootUser: minioadmin
+  rootPassword: minioadmin  # prototype only; later switch to existingSecret
+
+defaultBuckets: "tfstate"
+
+persistence:
+  enabled: true
+  size: 20Gi
+
+service:
+  type: ClusterIP

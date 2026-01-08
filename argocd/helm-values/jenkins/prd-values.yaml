@@ -1,0 +1,15 @@
+controller:
+  admin:
+    username: admin
+    password: admin
+  serviceType: ClusterIP
+  installPlugins:
+    - kubernetes:4310.vd33b_0869301f
+    - workflow-aggregator:600.vb_57cdd26fdd7
+    - git:5.5.2
+    - configuration-as-code:1897.v79281e066ea_7
+  JCasC:
+    defaultConfig: true
+
+agent:
+  enabled: true
