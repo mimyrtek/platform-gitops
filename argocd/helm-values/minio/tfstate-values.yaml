@@ -12,5 +12,6 @@ service:
   type: ClusterIP
 
 image:
-  repository: public.ecr.aws/bitnami/minio
+  registry: public.ecr.aws
+  repository: bitnami/minio
   tag: 2024.9.9-debian-12-r0
