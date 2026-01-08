@@ -4,6 +4,11 @@ controller:
     password: admin   # prototype only; later switch to existingSecret  
   serviceType: LoadBalancer
   serviceAnnotations: {}
+
+  serviceAccount:
+    create: false
+    name: jenkins-dev-controller
+
   loadBalancerIP: 10.10.50.211
 
   installPlugins:
