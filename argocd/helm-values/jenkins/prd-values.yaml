@@ -1,8 +1,10 @@
 controller:
   admin:
     username: admin
-    password: admin
-  serviceType: ClusterIP
+    password: admin   # prototype only; later switch to existingSecret  
+  serviceType: LoadBalancer
+  serviceAnnotations: {}
+  loadBalancerIP: 10.10.50.213
   installPlugins:
     - kubernetes
     - workflow-aggregator
