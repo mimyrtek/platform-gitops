@@ -9,7 +9,7 @@ spec:
   sources:
     - repoURL: https://charts.bitnami.com/bitnami
       chart: minio
-      targetRevision: 14.7.8
+      targetRevision: 17.0.21
       helm:
         releaseName: minio-tfstate
         valueFiles:
