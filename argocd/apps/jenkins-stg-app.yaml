@@ -15,7 +15,7 @@ spec:
         valueFiles:
           - $values/argocd/helm-values/jenkins/stg-values.yaml
 
-    - repoURL: <YOUR_GIT_REPO_URL>
+    - repoURL: https://github.com/mimyrtek/platform-gitops.git
       targetRevision: main
       ref: values
 

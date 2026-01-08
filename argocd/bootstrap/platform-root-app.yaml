@@ -6,7 +6,7 @@ metadata:
 spec:
   project: platform
   source:
-    repoURL: <YOUR_GIT_REPO_URL>          # e.g. https://github.com/mimyrtek/platform-gitops.git
+    repoURL: https://github.com/mimyrtek/platform-gitops.git
     targetRevision: main
     path: argocd/apps
   destination:
