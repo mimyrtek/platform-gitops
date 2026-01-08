@@ -3,8 +3,8 @@ kind: Kustomization
 
 resources:
   - jenkins-dev-rbac.yaml
-  #- jenkins-stg-rbac.yaml
-  #- jenkins-prd-rbac.yaml
+  - jenkins-stg-rbac.yaml
+  - jenkins-prd-rbac.yaml
   - platform-project.yaml
   - jenkins-dev-app.yaml
   - jenkins-stg-app.yaml
