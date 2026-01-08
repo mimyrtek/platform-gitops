@@ -3,22 +3,16 @@ kind: AppProject
 metadata:
   name: platform
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   description: Platform workloads managed by ArgoCD (prototype)
   sourceRepos:
-    - "<YOUR_GIT_REPO_URL>"
+    - "https://github.com/mimyrtek/platform-gitops.git"
     - "https://charts.jenkins.io"
     - "https://charts.bitnami.com/bitnami"
   destinations:
-    - namespace: argocd
-      server: https://kubernetes.default.svc
-    - namespace: jenkins-dev
-      server: https://kubernetes.default.svc
-    - namespace: jenkins-stg
-      server: https://kubernetes.default.svc
-    - namespace: jenkins-prd
-      server: https://kubernetes.default.svc
-    - namespace: tf-state
+    - namespace: "*"
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: ""
