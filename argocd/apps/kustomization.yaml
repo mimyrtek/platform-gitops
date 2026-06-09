@@ -10,3 +10,4 @@ resources:
   - jenkins-stg-app.yaml
   - jenkins-prd-app.yaml
   - minio-tfstate-app.yaml
+  - nexus-app.yaml

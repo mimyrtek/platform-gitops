@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus
+  labels:
+    app: nexus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexus
+  template:
+    metadata:
+      labels:
+        app: nexus
+    spec:
+      # emptyDir for the prototype (RKE2 has no default storage class). Swap to a
+      # PVC once local-path-provisioner is on the cluster — see platform AUDIT.
+      initContainers:
+        - name: fix-permissions
+          image: docker.io/library/busybox:1.36
+          securityContext:
+            runAsUser: 0
+          command: ["sh", "-c", "chown -R 200:200 /nexus-data"]
+          volumeMounts:
+            - name: nexus-data
+              mountPath: /nexus-data
+      containers:
+        - name: nexus
+          image: docker.io/sonatype/nexus3:3.91.0
+          env:
+            # Heap + direct memory must fit UNDER the cgroup limit (3Gi) with
+            # room for JVM overhead, or Nexus is OOMKilled into CrashLoop.
+            - name: INSTALL4J_ADD_VM_PARAMS
+              value: "-Xms512m -Xmx1024m -XX:MaxDirectMemorySize=1024m"
+            # admin / admin123 on first boot (instead of a random password)
+            - name: NEXUS_SECURITY_RANDOMPASSWORD
+              value: "false"
+          ports:
+            - containerPort: 8081
+              name: http
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "2Gi"
+            limits:
+              cpu: "2"
+              memory: "3Gi"
+          # Nexus cold-boot is slow — give it up to 5 min before liveness can kill it.
+          startupProbe:
+            httpGet:
+              path: /service/rest/v1/status
+              port: 8081
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /service/rest/v1/status
+              port: 8081
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /service/rest/v1/status
+              port: 8081
+            periodSeconds: 10
+      volumes:
+        - name: nexus-data
+          emptyDir: {}

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexus
+spec:
+  selector:
+    app: nexus
+  # Own MetalLB LoadBalancer IP (port 80 -> 8081). Nexus is awkward behind an
+  # ingress subpath, so it gets its own IP from the pool — reach it at
+  # http://<nexus-lb-ip>/  (admin / admin123 on first boot).
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8081
