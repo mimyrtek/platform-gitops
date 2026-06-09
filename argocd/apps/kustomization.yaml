@@ -11,3 +11,4 @@ resources:
   - jenkins-prd-app.yaml
   - minio-tfstate-app.yaml
   - nexus-app.yaml
+  - registry-ui-app.yaml

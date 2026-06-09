@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry-ui
+  labels:
+    app: registry-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry-ui
+  template:
+    metadata:
+      labels:
+        app: registry-ui
+    spec:
+      containers:
+        - name: ui
+          image: docker.io/joxit/docker-registry-ui:2.5.7
+          env:
+            # Zot runs on the NODE (systemd, 0.0.0.0:5000), not in k8s. Pull the
+            # node IP from the downward API so this works on any box, then proxy
+            # to it ($(NODE_IP) is interpolated because it's defined first).
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: NGINX_PROXY_PASS_URL
+              value: "http://$(NODE_IP):5000"
+            - name: SINGLE_REGISTRY
+              value: "true"
+            - name: REGISTRY_TITLE
+              value: "Fullstack Local Registry (Zot)"
+            - name: DELETE_IMAGES
+              value: "false"
+            - name: SHOW_CONTENT_DIGEST
+              value: "true"
+            - name: CATALOG_ELEMENTS_LIMIT
+              value: "1000"
+          ports:
+            - containerPort: 80
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10

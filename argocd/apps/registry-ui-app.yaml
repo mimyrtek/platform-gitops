@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: registry-ui
+  namespace: argocd
+spec:
+  project: platform
+  source:
+    repoURL: https://github.com/mimyrtek/platform-gitops.git
+    targetRevision: main
+    path: workloads/registry-ui
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: registry-ui
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

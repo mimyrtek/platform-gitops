@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry-ui
+spec:
+  selector:
+    app: registry-ui
+  # Own MetalLB LoadBalancer IP — browse the local registry at http://<ui-lb-ip>/
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
