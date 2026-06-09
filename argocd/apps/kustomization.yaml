@@ -12,3 +12,4 @@ resources:
   - minio-tfstate-app.yaml
   - nexus-app.yaml
   - registry-ui-app.yaml
+  - nexus-iq-app.yaml

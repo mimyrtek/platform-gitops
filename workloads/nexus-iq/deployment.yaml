@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus-iq
+  labels:
+    app: nexus-iq
+spec:
+  replicas: 1
+  # IQ Server is single-writer over one data dir — never scale >1.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nexus-iq
+  template:
+    metadata:
+      labels:
+        app: nexus-iq
+    spec:
+      # Air-gap demo adaptation of k8s-kustomize/nexus-iq:
+      #  - emptyDir instead of the oci-bv PVC (RKE2 has no storage class)
+      #  - busybox pinned to library/busybox:1.36 (the path Zot serves offline)
+      initContainers:
+        - name: fix-permissions
+          image: docker.io/library/busybox:1.36
+          securityContext:
+            runAsUser: 0
+          command: ["sh", "-c", "chown -R 1000:1000 /sonatype-work"]
+          volumeMounts:
+            - name: nexus-iq-data
+              mountPath: /sonatype-work
+      containers:
+        - name: nexus-iq
+          image: docker.io/sonatype/nexus-iq-server:1.190.0
+          env:
+            - name: JAVA_OPTS
+              value: "-Xms1024m -Xmx2048m"
+          ports:
+            - containerPort: 8070
+              name: http
+            - containerPort: 8071
+              name: admin
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "2Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+          volumeMounts:
+            - name: nexus-iq-data
+              mountPath: /sonatype-work
+          # IQ Server cold-boot is slow — startupProbe guards the liveness check.
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: 8071
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 8071
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 8071
+            periodSeconds: 10
+      volumes:
+        - name: nexus-iq-data
+          emptyDir: {}

@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nexus-iq
+  namespace: argocd
+spec:
+  project: platform
+  source:
+    repoURL: https://github.com/mimyrtek/platform-gitops.git
+    targetRevision: main
+    path: workloads/nexus-iq
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nexus-iq
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexus-iq
+spec:
+  selector:
+    app: nexus-iq
+  # Own MetalLB LoadBalancer IP — reach the UI at http://<nexus-iq-lb-ip>/
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8070
+    - name: admin
+      port: 8071
+      targetPort: 8071
