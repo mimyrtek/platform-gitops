@@ -12,4 +12,5 @@ resources:
   - minio-tfstate-app.yaml
   - nexus-app.yaml
   - registry-ui-app.yaml
-  - nexus-iq-app.yaml
+  # nexus-iq disabled by default (~3-4Gi RAM + needs a license) — uncomment to enable
+  # - nexus-iq-app.yaml
